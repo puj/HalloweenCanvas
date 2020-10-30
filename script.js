@@ -4,10 +4,11 @@
   const canvas2 = document.getElementById("canvas2");
   const ctx2 = canvas2.getContext("2d");
   const WIDTH = window.innerWidth;
+  console.log(WIDTH);
   const HEIGHT = window.innerHeight;
   const maxCharCount = 200;
   const fontSize = 10;
-  const maxColumns = WIDTH / fontSize;
+  const maxColumns = parseInt(WIDTH / fontSize);
   const fallingCharArr = new Array(maxColumns);
 
   canvas.width = canvas2.width = WIDTH;
@@ -20,6 +21,7 @@
   let SVG_WINDOW_HEIGHT = 76;
   let svgPointHolder = null;
   let SVG_SCALE = 2;
+
   let lookup = {};
 
   const svgContainsPoint = (x, y) => {
@@ -36,7 +38,7 @@
 
     point.y =
       parseInt(
-        ((SVG_WINDOW_WIDTH / window.innerHeight) * y * SVG_SCALE) / 1.2
+        ((SVG_WINDOW_HEIGHT / window.innerHeight) * y * SVG_SCALE) / 1.2
       ) -
       SVG_WINDOW_WIDTH / SVG_SCALE / 1.2;
 
