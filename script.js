@@ -4,7 +4,7 @@ const canvas2 = document.getElementById("canvas2");
 const ctx2 = canvas2.getContext("2d");
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-const maxCharCount = 100;
+const maxCharCount = 200;
 const fontSize = 10;
 const maxColumns = WIDTH / fontSize;
 const fallingCharArr = new Array(maxColumns);
@@ -19,14 +19,14 @@ let SVG_WINDOW_WIDTH = 124;
 let SVG_WINDOW_HEIGHT = 76;
 let svgPointHolder = null;
 let SVG_SCALE = 2;
-let SVG_SCALE_Y = 1.2;
 let lookup = {};
 
 const svgContainsPoint = (x, y) => {
   //   const point = svgElement.createSVGPoint();
   const point = svgPointHolder;
   point.x =
-    parseInt((x / window.innerWidth) * SVG_WINDOW_WIDTH * SVG_SCALE) -
+    // SVG_WINDOW_WIDTH * SVG_SCALE -
+    parseInt((SVG_WINDOW_WIDTH / window.innerWidth) * SVG_SCALE * x) -
     SVG_WINDOW_WIDTH / SVG_SCALE;
   //   point.y = parseInt(
   //     (y / window.innerHeight) * SVG_WINDOW_HEIGHT * SVG_SCALE +
@@ -34,8 +34,8 @@ const svgContainsPoint = (x, y) => {
   //   );
 
   point.y =
-    parseInt((y / window.innerHeight) * SVG_WINDOW_WIDTH * SVG_SCALE_Y) -
-    SVG_WINDOW_HEIGHT / SVG_SCALE;
+    parseInt(((SVG_WINDOW_WIDTH / window.innerHeight) * y * SVG_SCALE) / 1.2) -
+    SVG_WINDOW_WIDTH / SVG_SCALE / 1.2;
 
   let containsPoint = false;
   if (lookup[point.x] && point.y in lookup[point.x]) {
@@ -102,12 +102,12 @@ Point.prototype.draw = function (ctx) {
 const onLoad = () => {
   svgElement = document.querySelector("object").contentDocument.documentElement;
   geometries = svgElement.querySelectorAll("*");
-  SVG_WINDOW_WIDTH = 124;
-  SVG_WINDOW_HEIGHT = 76;
+  SVG_WINDOW_WIDTH = svgElement.viewBox.baseVal.width; //124;
+  SVG_WINDOW_HEIGHT = svgElement.viewBox.baseVal.height; //76;
   svgPointHolder = svgElement.createSVGPoint();
 
-  for (let i = 0; i < maxColumns; i++) {
-    fallingCharArr[i] = new Point(i * fontSize, randomFloat(-500, 0));
+  for (let i = 0; i < maxCharCount; i++) {
+    fallingCharArr[i] = new Point(i * fontSize, randomFloat(-1200, 0));
   }
 
   var update = function () {
