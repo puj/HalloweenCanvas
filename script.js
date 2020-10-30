@@ -34,7 +34,7 @@
     const point = svgPointHolder;
     point.x =
       // SVG_WINDOW_WIDTH * SVG_SCALE -
-      parseInt((SVG_WINDOW_WIDTH / window.innerWidth) * SVG_SCALE * x) -
+      parseInt((SVG_WINDOW_WIDTH / WIDTH) * SVG_SCALE * x) -
       SVG_WINDOW_WIDTH / SVG_SCALE;
     //   point.y = parseInt(
     //     (y / window.innerHeight) * SVG_WINDOW_HEIGHT * SVG_SCALE +
@@ -42,11 +42,9 @@
     //   );
 
     point.y =
-      parseInt(
-        ((SVG_WINDOW_HEIGHT / window.innerHeight) * y * SVG_SCALE) / 1.2
-      ) -
-      SVG_WINDOW_WIDTH / SVG_SCALE / 1.2;
-
+      parseInt(((SVG_WINDOW_HEIGHT / HEIGHT) * y * SVG_SCALE) / 1.2) -
+      SVG_WINDOW_WIDTH / SVG_SCALE / 2;
+    // point.x = 103;
     let containsPoint = false;
     if (lookup[point.x] && point.y in lookup[point.x]) {
       return lookup[point.x][point.y];
@@ -110,9 +108,11 @@
   };
 
   const onLoad = () => {
-    svgElement = document.querySelector("object").contentDocument
-      .documentElement;
+    // svgElement = document.querySelector("object").contentDocument
+    // .documentElement;
+    svgElement = document.querySelector("svg");
     geometries = svgElement.querySelectorAll("*");
+
     SVG_WINDOW_WIDTH = svgElement.viewBox.baseVal.width; //124;
     SVG_WINDOW_HEIGHT = svgElement.viewBox.baseVal.height; //76;
     svgPointHolder = svgElement.createSVGPoint();
@@ -136,5 +136,8 @@
     update();
   };
 
-  document.getElementById("svg-image").addEventListener("load", onLoad);
+  // document.getElementById("svg-image").addEventListener("load", onLoad);
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(onLoad, 1000);
+  });
 })();
