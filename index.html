@@ -12,39 +12,6 @@
     <object id="svg-image" data="technigo.svg" type="image/svg+xml"></object>
 
     <script src="script.js" defer></script>
-    <script defer>
-        console.log(document.getElementById("svg-image"))
-        const onClick = (e) => {
-            const x = e.clientX;
-            const y = e.clientY;
-            // console.log(`client coord: ${x}, ${y}`)
-            // console.log(document.elementsFromPoint(x,y))
-
-            const svgElement = document.querySelector("object").contentDocument.documentElement;
-            // const paths = svgElement.querySelectorAll("path");
-            const geometries = svgElement.querySelectorAll("*")
-
-    
-            let point = svgElement.createSVGPoint();
-            point.x = parseInt(x/window.innerWidth*124);
-            point.y = parseInt(y/window.innerHeight*76);
-            geometries.forEach(path => {                   
-                const isInStroke = path.isPointInStroke && path.isPointInStroke(point);
-                const isInFill = path.isPointInFill && path.isPointInFill(point);
-                if(isInStroke || isInFill){
-                    console.log(path)
-                }
-
-            })
-
-        };
-        // document.getElementById("svg-image").addEventListener("load", ()=>{
-        //     const svgElement = document.querySelector("object").contentDocument.documentElement;
-        //     svgElement.addEventListener("click", onClick);
-
-        // });
-        document.onclick = onClick;
-    </script>
 </body>
 
 </html>
