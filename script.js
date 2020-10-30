@@ -34,8 +34,8 @@
     const point = svgPointHolder;
     point.x =
       // SVG_WINDOW_WIDTH * SVG_SCALE -
-      parseInt((SVG_WINDOW_WIDTH / WIDTH) * SVG_SCALE * x) -
-      SVG_WINDOW_WIDTH / SVG_SCALE;
+      parseInt((SVG_WINDOW_WIDTH / WIDTH / 1.5) * SVG_SCALE * x) -
+      SVG_WINDOW_WIDTH / SVG_SCALE / 3;
     //   point.y = parseInt(
     //     (y / window.innerHeight) * SVG_WINDOW_HEIGHT * SVG_SCALE +
     //       SVG_WINDOW_HEIGHT * (1 - SVG_SCALE)
