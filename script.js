@@ -3,9 +3,14 @@
   const ctx = canvas.getContext("2d");
   const canvas2 = document.getElementById("canvas2");
   const ctx2 = canvas2.getContext("2d");
-  const WIDTH = window.innerWidth;
-  console.log(WIDTH);
-  const HEIGHT = window.innerHeight;
+  const WIDTH =
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    document.body.clientWidth;
+  const HEIGHT =
+    window.innerHeight ||
+    document.documentElement.clientHeight ||
+    document.body.clientHeight;
   const maxCharCount = 200;
   const fontSize = 10;
   const maxColumns = parseInt(WIDTH / fontSize);
