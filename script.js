@@ -111,15 +111,11 @@ const onLoad = () => {
   }
 
   var update = function () {
-    ctx.fillStyle = "rgba(0,0,0,0.01)";
+    ctx.fillStyle = "rgba(0,0,0,0.02)";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
     ctx2.clearRect(0, 0, WIDTH, HEIGHT);
 
     fallingCharArr.forEach((character) => {
-      //   if (svgContainsPoint(character.x, character.y)) {
-      //   } else {
-      //     // ctx.fillStyle = "rgba(0,0,0,0.05)";
-      //   }
       character.draw(ctx);
     });
 
