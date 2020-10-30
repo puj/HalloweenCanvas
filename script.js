@@ -12,6 +12,51 @@ const fallingCharArr = new Array(maxColumns);
 canvas.width = canvas2.width = WIDTH;
 canvas.height = canvas2.height = HEIGHT;
 
+// SVG Information, recalc on resize?
+let svgElement = null;
+let geometries = null;
+let SVG_WINDOW_WIDTH = 124;
+let SVG_WINDOW_HEIGHT = 76;
+let svgPointHolder = null;
+let SVG_SCALE = 2;
+let SVG_SCALE_Y = 1.2;
+let lookup = {};
+
+const svgContainsPoint = (x, y) => {
+  //   const point = svgElement.createSVGPoint();
+  const point = svgPointHolder;
+  point.x =
+    parseInt((x / window.innerWidth) * SVG_WINDOW_WIDTH * SVG_SCALE) -
+    SVG_WINDOW_WIDTH / SVG_SCALE;
+  //   point.y = parseInt(
+  //     (y / window.innerHeight) * SVG_WINDOW_HEIGHT * SVG_SCALE +
+  //       SVG_WINDOW_HEIGHT * (1 - SVG_SCALE)
+  //   );
+
+  point.y =
+    parseInt((y / window.innerHeight) * SVG_WINDOW_WIDTH * SVG_SCALE_Y) -
+    SVG_WINDOW_HEIGHT / SVG_SCALE;
+
+  let containsPoint = false;
+  if (lookup[point.x] && point.y in lookup[point.x]) {
+    return lookup[point.x][point.y];
+  }
+  geometries.forEach((path) => {
+    const isInStroke = path.isPointInStroke && path.isPointInStroke(point);
+    const isInFill = path.isPointInFill && path.isPointInFill(point);
+    if (isInStroke || isInFill) {
+      containsPoint = true;
+      return;
+    }
+  });
+
+  if (!(point.x in lookup)) {
+    lookup[point.x] = {};
+  }
+  lookup[point.x][point.y] = containsPoint;
+  return containsPoint;
+};
+
 const randomInt = (min, max) => {
   return Math.floor(randomFloat(min, max));
 };
@@ -20,24 +65,30 @@ const randomFloat = (min, max) => {
   return Math.random() * (max - min) + min;
 };
 
+const getRandomCharacter = () => {
+  return String.fromCharCode(randomInt(65, 91));
+};
+
 function Point(x, y) {
   this.x = x;
   this.y = y;
 }
 
-const getRandomCharacter = () => {
-  return String.fromCharCode(randomInt(65, 91));
-};
-
 Point.prototype.draw = function (ctx) {
   this.value = getRandomCharacter();
   this.speed = randomFloat(1, 5);
 
-  ctx2.fillStyle = "rgba(255,255,255,0.8)";
+  ctx2.fillStyle = "rgba(0,0,0,0.8)";
   ctx2.font = fontSize + "px san-serif";
   ctx2.fillText(this.value, this.x, this.y);
 
-  ctx.fillStyle = "#eb6123";
+  if (svgContainsPoint(this.x, this.y)) {
+    // ctx.fillStyle = "#6b290a";
+    ctx.fillStyle = "#eb6123";
+  } else {
+    // ctx.fillStyle = "#eb6123";
+    ctx.fillStyle = "#000000";
+  }
   ctx.font = fontSize + "px san-serif";
   ctx.fillText(this.value, this.x, this.y);
 
@@ -48,19 +99,34 @@ Point.prototype.draw = function (ctx) {
   }
 };
 
-for (let i = 0; i < maxColumns; i++) {
-  fallingCharArr[i] = new Point(i * fontSize, randomFloat(-500, 0));
-}
+const onLoad = () => {
+  svgElement = document.querySelector("object").contentDocument.documentElement;
+  geometries = svgElement.querySelectorAll("*");
+  SVG_WINDOW_WIDTH = 124;
+  SVG_WINDOW_HEIGHT = 76;
+  svgPointHolder = svgElement.createSVGPoint();
 
-var update = function () {
-  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  for (let i = 0; i < maxColumns; i++) {
+    fallingCharArr[i] = new Point(i * fontSize, randomFloat(-500, 0));
+  }
 
-  ctx.fillRect(0, 0, WIDTH, HEIGHT);
-  ctx2.clearRect(0, 0, WIDTH, HEIGHT);
+  var update = function () {
+    ctx.fillStyle = "rgba(0,0,0,0.01)";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctx2.clearRect(0, 0, WIDTH, HEIGHT);
 
-  fallingCharArr.forEach((character) => character.draw(ctx));
+    fallingCharArr.forEach((character) => {
+      //   if (svgContainsPoint(character.x, character.y)) {
+      //   } else {
+      //     // ctx.fillStyle = "rgba(0,0,0,0.05)";
+      //   }
+      character.draw(ctx);
+    });
 
-  requestAnimationFrame(update);
+    requestAnimationFrame(update);
+  };
+
+  update();
 };
 
-update();
+document.getElementById("svg-image").addEventListener("load", onLoad);
